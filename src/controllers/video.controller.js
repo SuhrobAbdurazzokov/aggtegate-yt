@@ -136,7 +136,7 @@ export class VideoController {
     }
   }
 
-  async avgComment(req, res) {
+  async avgVideoComment(req, res) {
     try {
       const result = await Video.aggregate([
         {

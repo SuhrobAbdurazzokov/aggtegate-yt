@@ -10,6 +10,7 @@ videoRouter
   .get("/", videoController.getAllVideos)
   .get("/popular", videoController.popularCategory)
   .get("/:id", videoController.getVideoById)
+  .get("/:id", videoController.avgVideoComment)
   .patch("/:id", videoController.updateVideo)
   .delete("/:id", videoController.deleteVideo);
 
