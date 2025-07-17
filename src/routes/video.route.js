@@ -5,6 +5,9 @@ const videoController = new VideoController();
 
 const videoRouter = Router();
 
-videoRouter.post("/", videoController.crateVideo);
+videoRouter
+  .post("/", videoController.crateVideo)
+  .get("/", videoController.getAllVideos)
+  .get("/:id", videoController.getVideoById);
 
 export default videoRouter;

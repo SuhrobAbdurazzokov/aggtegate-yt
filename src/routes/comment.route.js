@@ -5,6 +5,9 @@ const commentComtroller = new CommentController();
 
 const commentRouter = Router();
 
-commentRouter.post("/", commentComtroller.createComment);
+commentRouter
+  .post("/", commentComtroller.createComment)
+  .get("/", commentComtroller.getAllComments)
+  .get("/:id", commentComtroller.getCommentById);
 
 export default commentRouter;
