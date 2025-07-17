@@ -8,6 +8,9 @@ const videoRouter = Router();
 videoRouter
   .post("/", videoController.crateVideo)
   .get("/", videoController.getAllVideos)
-  .get("/:id", videoController.getVideoById);
+  .get("/popular", videoController.popularCategory)
+  .get("/:id", videoController.getVideoById)
+  .patch("/:id", videoController.updateVideo)
+  .delete("/:id", videoController.deleteVideo);
 
 export default videoRouter;

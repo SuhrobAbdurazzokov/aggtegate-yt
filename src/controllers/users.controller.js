@@ -148,6 +148,42 @@ export class UsersController {
     }
   }
 
+  async topBloggersFollowers(req, res) {
+    try {
+      const topBlogger = Users.aggregate([
+        {
+          $lookup: {
+            from: "subs",
+            localField: "_id",
+            foreignField: "followee_id",
+            as: "followers",
+          },
+        },
+
+        {
+          $addFields: {
+            followersCount: { $size: "$followers" },
+          },
+        },
+
+        { $sort: { $followersCount: -1 } },
+        { $limit: 5 },
+
+        {
+          $project: {
+            name: 1,
+            followersCount: 1,
+          },
+        },
+      ]);
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error || "Internal server error",
+      });
+    }
+  }
+
   async updateUser(req, res) {
     try {
       const id = req.params?.id;

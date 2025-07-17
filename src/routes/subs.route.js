@@ -5,6 +5,8 @@ const subsController = new SubsController();
 
 const subsRouter = Router();
 
-subsRouter.post("/", subsController.createSubs);
+subsRouter
+  .post("/", subsController.createSubs)
+  .delete("/:id", subsController.deleteSubs);
 
-export default subsRouter
+export default subsRouter;

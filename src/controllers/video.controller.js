@@ -136,6 +136,76 @@ export class VideoController {
     }
   }
 
+  async avgComment(req, res) {
+    try {
+      const result = await Video.aggregate([
+        {
+          $lookup: {
+            from: "comments",
+            localField: "_id",
+            foreignField: "video_id",
+            as: "commentInfo",
+          },
+        },
+        {
+          $project: {
+            commentCount: { $size: "$commentInfo" },
+            likes: { $ifNull: ["$likes", 0] },
+          },
+        },
+
+        {
+          $group: {
+            _id: "$_id",
+            avgCommentCount: { $avg: "$commentCount" },
+            avgLikes: { $avg: "$likes" },
+          },
+        },
+      ]);
+      return res.status(200).json({
+        statusCode: 200,
+        message: "success",
+        data: result,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: "interval serever error",
+      });
+    }
+  }
+
+  async popularCategory(req, res) {
+    try {
+      const avgCommentAndLikes = await Video.aggregate([
+        {
+          $group: {
+            _id: "$category",
+            videoCount: { $sum: 1 },
+            totalViews: { $sum: "$views" },
+          },
+        },
+
+        {
+          $project: {
+            _id: 0,
+            category: "_id",
+            videoCount: 1,
+            totalViews: 1,
+          },
+        },
+
+        { $sort: { totalViews: -1 } },
+        { $limit: 5 },
+      ]);
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
   async updateVideo(req, res) {
     try {
       const id = req.params?.id;

@@ -8,6 +8,8 @@ const usersRouter = Router();
 usersRouter
   .post("/", usersController.createUser)
   .get("/", usersController.getAllUsers)
-  .get("/:id", usersController.getUserById);
+  .get("/:id", usersController.getUserById)
+  .patch("/:id", usersController.updateUser)
+  .delete("/:id", usersController.deleteUser);
 
 export default usersRouter;
