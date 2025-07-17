@@ -2,7 +2,7 @@ import mongoose, { isValidObjectId } from "mongoose";
 import Video from "../models/video.model.js";
 
 export class VideoController {
-  async crateVideo(req, res) {
+  async createVideo(req, res) {
     try {
       const video = await Video.create(req.body);
       return res.status(201).json({
@@ -55,7 +55,7 @@ export class VideoController {
 
       return res.status(200).json({
         statusCode: 200,
-        message: "sucess",
+        message: "Successfully retrieved!",
         data: videos,
       });
     } catch (error) {
@@ -125,8 +125,77 @@ export class VideoController {
 
       return res.status(200).json({
         statusCode: 200,
-        message: "Success",
-        data: video,
+        message: "Successfully retrieved!",
+        data: video[0],
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
+  async updateVideo(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!id || !isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Invalid video ID",
+        });
+      }
+
+      const updatedVideo = await Video.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!updatedVideo) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "Video not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully updated!",
+        data: updatedVideo,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
+  async deleteVideo(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!id || !isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Invalid video ID",
+        });
+      }
+
+      const deletedVideo = await Video.findByIdAndDelete(id);
+
+      if (!deletedVideo) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "Video not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully deleted!",
+        data: deletedVideo,
       });
     } catch (error) {
       return res.status(500).json({

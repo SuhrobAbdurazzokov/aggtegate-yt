@@ -56,7 +56,7 @@ export class CommentController {
 
       return res.status(200).json({
         statusCode: 200,
-        message: "sucess",
+        message: "Successfully retrieved!",
         data: comments,
       });
     } catch (error) {
@@ -132,11 +132,80 @@ export class CommentController {
 
       return res.status(200).json({
         statusCode: 200,
-        message: "Success",
+        message: "Successfully retrieved!",
         data: comment[0],
       });
     } catch (error) {
       console.error("Error in getCommentById:", error);
+      return res.status(500).json({
+        statusCode: 500,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
+  async updateComment(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!id || !isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Invalid comment ID",
+        });
+      }
+
+      const updatedComment = await Comment.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!updatedComment) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "Comment not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully updated!",
+        data: updatedComment,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error.message || "Internal server error",
+      });
+    }
+  }
+
+  async deleteComment(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!id || !isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Invalid comment ID",
+        });
+      }
+
+      const deletedComment = await Comment.findByIdAndDelete(id);
+
+      if (!deletedComment) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "Comment not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully deleted!",
+        data: deletedComment,
+      });
+    } catch (error) {
       return res.status(500).json({
         statusCode: 500,
         message: error.message || "Internal server error",

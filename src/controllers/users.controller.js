@@ -55,9 +55,9 @@ export class UsersController {
         },
       ]);
 
-      return res.status(201).json({
-        statusCode: 201,
-        message: "Successfully created!",
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully retrieved!",
         data: users,
         required: true,
       });
@@ -127,10 +127,102 @@ export class UsersController {
         },
       ]);
 
-      return res.status(201).json({
-        statusCode: 201,
-        message: "Successfully created!",
-        data: user,
+      if (!user || user.length === 0) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully retrieved!",
+        data: user[0],
+        required: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error || "Internal server error",
+      });
+    }
+  }
+
+  async updateUser(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Bad invalid id",
+        });
+      }
+
+      if (!id) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "User not found by id",
+        });
+      }
+
+      const updatedUser = await Users.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (!updatedUser) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully updated!",
+        data: updatedUser,
+        required: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        statusCode: 500,
+        message: error || "Internal server error",
+      });
+    }
+  }
+
+  async deleteUser(req, res) {
+    try {
+      const id = req.params?.id;
+
+      if (!isValidObjectId(id)) {
+        return res.status(400).json({
+          statusCode: 400,
+          message: "Bad invalid id",
+        });
+      }
+
+      if (!id) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "User not found by id",
+        });
+      }
+
+      const deletedUser = await Users.findByIdAndDelete(id);
+
+      if (!deletedUser) {
+        return res.status(404).json({
+          statusCode: 404,
+          message: "User not found",
+        });
+      }
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "Successfully deleted!",
+        data: deletedUser,
         required: true,
       });
     } catch (error) {
