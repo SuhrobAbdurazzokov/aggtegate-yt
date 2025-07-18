@@ -138,7 +138,7 @@ export class VideoController {
 
   async avgVideoComment(req, res) {
     try {
-      const result = await Video.aggregate([
+      const avgComment = await Video.aggregate([
         {
           $lookup: {
             from: "comments",
@@ -165,7 +165,7 @@ export class VideoController {
       return res.status(200).json({
         statusCode: 200,
         message: "success",
-        data: result,
+        data: avgComment,
       });
     } catch (error) {
       return res.status(500).json({
@@ -177,7 +177,7 @@ export class VideoController {
 
   async popularCategory(req, res) {
     try {
-      const avgCommentAndLikes = await Video.aggregate([
+      const popularCtgry = await Video.aggregate([
         {
           $group: {
             _id: "$category",
@@ -198,6 +198,12 @@ export class VideoController {
         { $sort: { totalViews: -1 } },
         { $limit: 5 },
       ]);
+
+      return res.status(200).json({
+        statusCode: 200,
+        message: "success",
+        data: popularCtgry,
+      });
     } catch (error) {
       return res.status(500).json({
         statusCode: 500,
