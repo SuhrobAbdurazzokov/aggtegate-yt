@@ -184,6 +184,13 @@ export class UsersController {
     }
   }
 
+
+
+  
+
+
+
+
   async updateUser(req, res) {
     try {
       const id = req.params?.id;

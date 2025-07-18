@@ -6,7 +6,7 @@ const videoController = new VideoController();
 const videoRouter = Router();
 
 videoRouter
-  .post("/", videoController.crateVideo)
+  .post("/", videoController.createVideo)
   .get("/", videoController.getAllVideos)
   .get("/popular", videoController.popularCategory)
   .get("/:id", videoController.getVideoById)
